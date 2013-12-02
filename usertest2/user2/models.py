@@ -113,3 +113,29 @@ class User(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email])
+
+
+class Wine(models.Model):
+	#How to reference wines when creating a bottle (domaine_millesime?)
+    couleur = models.CharField(max_length=100, blank=True)
+    pays = models.CharField(max_length=100, blank=True)
+    region = models.CharField(max_length=100, blank=True)
+    appellation = models.CharField(max_length=100, blank=True)
+    domaine = models.CharField(max_length=100, blank=True)
+    cuvee = models.CharField(max_length=100, blank=True)
+    millesime = models.IntegerField()
+    price = models.IntegerField()
+    quantity = models.IntegerField()
+    description = models.TextField()
+    added_on = models.DateTimeField()
+
+
+    def __unicode__(self):
+        return self.domaine #concatenate?
+
+    def update_qty(self, quantity):
+        self.quantity -= quantity
+        self.save()
+
+    def qty(self):
+        return self.quantity

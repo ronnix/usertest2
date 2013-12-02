@@ -7,6 +7,7 @@ admin.autodiscover()
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
+router.register(r'wines', views.WineViewSet)
 
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),
