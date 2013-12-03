@@ -10,6 +10,7 @@ router.register(r'users', views.UserViewSet)
 router.register(r'wines', views.WineViewSet)
 router.register(r'movements', views.MovementViewSet)
 router.register(r'containers', views.ContainerViewSet)
+router.register(r'bottles', views.BottleViewSet)
 
 
 urlpatterns = patterns('',

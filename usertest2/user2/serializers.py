@@ -1,4 +1,4 @@
-from models import User, Wine, Movement, Container
+from models import User, Wine, Movement, Container, Bottle
 from rest_framework import serializers
 
 
@@ -19,7 +19,7 @@ class WineSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Wine
         fields = ('url', 'couleur', 'region', 'appellation', 'domaine', 'cuvee', 
-        	'millesime', 'description', 'price', 'description')
+        	'millesime', 'description', 'price', 'quantity')
 
 class MovementSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -30,3 +30,8 @@ class ContainerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Container
         fields = ('url', 'container_type', 'user')
+
+class BottleSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Bottle
+        fields = ('url', 'wine', 'user')

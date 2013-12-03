@@ -1,8 +1,8 @@
 from django.shortcuts import render
 #from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, permissions
-from models import User, Wine, Movement, Container
-from serializers import UserSerializer, WineSerializer, MovementSerializer, ContainerSerializer
+from models import User, Wine, Movement, Container, Bottle
+from serializers import UserSerializer, WineSerializer, MovementSerializer, ContainerSerializer, BottleSerializer
 #from quickstart.serializers import UserSerializer, GroupSerializer
 
 
@@ -33,3 +33,10 @@ class ContainerViewSet(viewsets.ModelViewSet):
     """
     queryset = Container.objects.all()
     serializer_class = ContainerSerializer
+
+class BottleViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows bottles to be viewed or edited.
+    """
+    queryset = Bottle.objects.all()
+    serializer_class = BottleSerializer

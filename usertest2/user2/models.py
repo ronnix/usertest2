@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
+from datetime import datetime
 
 from rest_framework import serializers
 
@@ -77,8 +78,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         * last_login
         * is_superuser
     """
-    email = models.EmailField(_('email address'), max_length=255,
-                              unique=True, db_index=True)
+    email = models.EmailField(_('email address'), max_length=255, unique=True, db_index=True) #TODO: PH=True
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
 
@@ -114,6 +114,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         send_mail(subject, message, from_email, [self.email])
 
+    def save(self, *args, **kwargs):
+    	super(User, self).save(*args, **kwargs)
+    	v = Container(container_type='vinibar', user=self)
+    	v.save()
+    	h = Container(container_type='history', user=self)
+    	h.save()
+
+
 
 class Wine(models.Model):
 	#How to reference wines when creating a bottle (domaine_millesime?)
@@ -127,7 +135,7 @@ class Wine(models.Model):
     price = models.IntegerField()
     quantity = models.IntegerField()
     description = models.TextField()
-    added_on = models.DateTimeField()
+    added_on = models.DateTimeField(auto_now_add=True)
 
 
     def __unicode__(self):
@@ -151,13 +159,6 @@ class Container(models.Model):
 	container_type = models.CharField(max_length=10, choices=CONTAINER_TYPE)
 	user = models.ForeignKey(User, related_name='user_id')
 
-# class Vinibar(Container):
-# 	user = models.ForeignKey(User)
-# 	#container_type = vinibar
-
-# class History(Container):
-# 	user = models.ForeignKey(User)
-
 	#Vinibar & History must be created when a user is created?
 
 class Movement(models.Model):
@@ -165,3 +166,46 @@ class Movement(models.Model):
     start = models.ForeignKey(Container, related_name='movement_start')
     finish = models.ForeignKey(Container, related_name='movement_finish')
     quantity = models.IntegerField(default=1)
+
+class Bottle(models.Model):
+	#id = ???
+	wine = models.ForeignKey(Wine, null=False)
+	user = models.ForeignKey(User, null=False) #necessary? or mounted.finish.user?
+	mounted = models.ForeignKey(Movement, related_name='bottle_mounted')
+	rated = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_rated')
+	date_mounted = models.DateTimeField() #included in Movement but necessary for filter? #DateTime or Date?
+	date_rated = models.DateTimeField(null=True, blank=True, default=None) #included in Movement but necessary for filter?
+	rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=True, blank=True, default=None) #integer for 3.5? Blank=True?
+	comment = models.TextField(null=True, blank=True, default=None)
+	#tags = models.ManyToManyField('tags.Tag', related_name='posts')
+
+	# def current_bottles():
+	# 	b = Bottle.objects.filter(user=self.user and self.rated=Null).order_by('date_mounted')
+
+	# def rated_bottles():
+	# 	b = Bottle.objects.filter(user=self.user and rated.finish.user=self.user).order_by('date_rated')
+
+	def save(self, wine, user, force_insert=True, *args, **kwargs):
+		d = datetime.now()
+		self.wine = wine #wine referencing issue
+		self.user = user
+		#TODO: stock alert: 
+		#q = Wine.objects.get("wine_id").quantity
+		#if(q<1) raiseError('No bottle available') send email? 
+		#TWine.objects.get("wine_id").quantity -= 1
+		v = Container.objects.get(container_type='vinibar', user=user)
+		#TODO: handle error
+		c = Container.objects.get(container_type='cellar', user=admin)
+		#TODO: handle error 
+		m = Movement(date=d, start=c, finish=v) #quantity=quantity?
+		self.mounted = mounted
+		#m.save()
+		self.date_mounted = d
+		super(Bottle, self).save(*args, **kwargs)
+
+
+	# def add_to_vinibar(vinibar_id, quantity):   Included in creation
+	# 	self.create_bottle()
+		# movement = Movement(from=cave, to=vinibar_id, quantity=quantity)
+		# movement.save()
+		# self.mount = movement
