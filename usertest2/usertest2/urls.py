@@ -8,6 +8,9 @@ admin.autodiscover()
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'wines', views.WineViewSet)
+router.register(r'movements', views.MovementViewSet)
+router.register(r'containers', views.ContainerViewSet)
+
 
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),

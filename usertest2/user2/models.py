@@ -139,3 +139,29 @@ class Wine(models.Model):
 
     def qty(self):
         return self.quantity
+
+class Container(models.Model):
+
+	CONTAINER_TYPE = (
+	('cellar', 'Cellar'),
+	('vinibar', 'Vinibar'),
+	('history', 'History'),
+	)
+
+	container_type = models.CharField(max_length=10, choices=CONTAINER_TYPE)
+	user = models.ForeignKey(User, related_name='user_id')
+
+# class Vinibar(Container):
+# 	user = models.ForeignKey(User)
+# 	#container_type = vinibar
+
+# class History(Container):
+# 	user = models.ForeignKey(User)
+
+	#Vinibar & History must be created when a user is created?
+
+class Movement(models.Model):
+    date = models.DateTimeField()
+    start = models.ForeignKey(Container, related_name='movement_start')
+    finish = models.ForeignKey(Container, related_name='movement_finish')
+    quantity = models.IntegerField(default=1)
