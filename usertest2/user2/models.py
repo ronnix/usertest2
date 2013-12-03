@@ -116,11 +116,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
     	super(User, self).save(*args, **kwargs)
+    	c = Container(container_type='cellar', user=self) #Comment creer une cave unique? Utile?
+    	c.save()
     	v = Container(container_type='vinibar', user=self)
     	v.save()
     	h = Container(container_type='history', user=self)
     	h.save()
-
+    	m = Movement(date=datetime.now(), start=c, finish=v)   #Creer le movement au moment de Bottle.save()
+    	m.save()
 
 
 class Wine(models.Model):
@@ -179,29 +182,50 @@ class Bottle(models.Model):
 	comment = models.TextField(null=True, blank=True, default=None)
 	#tags = models.ManyToManyField('tags.Tag', related_name='posts')
 
-	# def current_bottles():
-	# 	b = Bottle.objects.filter(user=self.user and self.rated=Null).order_by('date_mounted')
-
-	# def rated_bottles():
-	# 	b = Bottle.objects.filter(user=self.user and rated.finish.user=self.user).order_by('date_rated')
-
-	def save(self, wine, user, force_insert=True, *args, **kwargs):
-		d = datetime.now()
-		self.wine = wine #wine referencing issue
-		self.user = user
-		#TODO: stock alert: 
-		#q = Wine.objects.get("wine_id").quantity
-		#if(q<1) raiseError('No bottle available') send email? 
-		#TWine.objects.get("wine_id").quantity -= 1
-		v = Container.objects.get(container_type='vinibar', user=user)
-		#TODO: handle error
-		c = Container.objects.get(container_type='cellar', user=admin)
-		#TODO: handle error 
-		m = Movement(date=d, start=c, finish=v) #quantity=quantity?
-		self.mounted = mounted
-		#m.save()
-		self.date_mounted = d
+	def save(self, *args, **kwargs):
+		# self.wine = wine #wine referencing issue
+		# self.user = user
+		# self.mounted = mounted
+		self.date_mounted = datetime.now()
 		super(Bottle, self).save(*args, **kwargs)
+
+	def rate(self, rating, comment, *args, **kwargs): #interet de *args, **kwargs quand on connait l'input?
+		d = datetime.now()
+		self.rating = rating
+		self.comment = comment
+		date_rated = d
+		v = Container.objects.get(container_type='vinibar', user=self.user)
+		#TODO: handle error
+		h = Container.objects.get(container_type='history', user=self.user)
+		#TODO: handle error 
+		m = Movement(date=d, start=v, finish=h) #quantity=quantity?
+		m.save()
+		self.rated = m
+
+	def current_bottles():
+		b = Bottle.objects.filter(user=self.user and self.rated==null).order_by('date_mounted')
+
+	def rated_bottles():
+		b = Bottle.objects.filter(user=self.user and rated.finish.user==self.user).order_by('date_rated')
+
+	# def save(self, *args, **kwargs):
+	# 	d = datetime.now()
+	# 	self.wine = wine #wine referencing issue
+	# 	self.user = user
+	# 	#TODO: stock alert: 
+	# 	#q = Wine.objects.get("wine_id").quantity
+	# 	#if(q<1) raiseError('No bottle available') send email? 
+	# 	#Wine.objects.get("wine_id").quantity -= 1
+	# 	v = Container.objects.get(container_type='vinibar', user=user)
+	# 	#TODO: handle error
+	# 	c = Container.objects.get(container_type='cellar', user=admin)
+	# 	#TODO: handle error 
+	# 	m = Movement(date=d, start=c, finish=v) #quantity=quantity?
+	# 	m.save()
+	# 	self.mounted = m
+	# 	#m.save()
+	# 	self.date_mounted = d
+	# 	super(Bottle, self).save(self, self.wine, self.user, *args, **kwargs)
 
 
 	# def add_to_vinibar(vinibar_id, quantity):   Included in creation
