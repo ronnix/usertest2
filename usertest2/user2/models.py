@@ -179,8 +179,8 @@ class Movement(models.Model):
     def __unicode__(self):
 		return u'%s %s %s' % (self.start, "to", self.finish)
 
-	class Meta:
-		unique_together = ('start', 'finish') #TODO: Check for / remove duplicates 
+	# class Meta:
+	# 	unique_together = ('start', 'finish') #TODO: Check for / remove duplicates 
 
 class Bottle(models.Model):
 	#id = ???
