@@ -11,7 +11,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES['default'] = dj_database_url.config()
+DATABASES['default'] = dj_database_url.config(default=os.environ.get('DATABASE_URL'))  #added for heroku
 
 DATABASES = {  
     'default': {  
@@ -28,10 +28,10 @@ DATABASES = {
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 # Allow all host headers
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*'] # * added for heroku
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') #added for heroku
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -133,7 +133,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'user2',
     'rest_framework',
-    'gunicorn',
+    'gunicorn', #added for heroku
 )
 
 AUTH_USER_MODEL = 'user2.User'

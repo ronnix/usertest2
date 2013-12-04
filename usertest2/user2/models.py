@@ -124,7 +124,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     	h.save()
     	m1, _ = Movement.objects.get_or_create(date=datetime.now(), start=c, finish=v)
     	m1.save()
-    	print("Movement for"+self.email+"created")
     	m2, _ = Movement.objects.get_or_create(date=datetime.now(), start=v, finish=h)
     	m2.save()
 
@@ -143,7 +142,7 @@ class Wine(models.Model):
     millesime = models.IntegerField()
     price = models.IntegerField()
     quantity = models.IntegerField()
-    description = models.TextField()
+    description = models.TextField()  #TODO: accepter accents
     added_on = models.DateTimeField(auto_now_add=True)
 
 
@@ -173,24 +172,32 @@ class Container(models.Model):
 
 class Movement(models.Model):
     date = models.DateTimeField()
-    start = models.ForeignKey(Container, related_name='movement_start')
+    start = models.ForeignKey(Container, related_name='movement_start') #imposer start/user == finish.user
     finish = models.ForeignKey(Container, related_name='movement_finish')
     quantity = models.IntegerField(default=1)
 
     def __unicode__(self):
 		return u'%s %s %s' % (self.start, "to", self.finish)
 
+	class Meta:
+		unique_together = ('start', 'finish') #TODO: Check for / remove duplicates 
+
 class Bottle(models.Model):
 	#id = ???
 	wine = models.ForeignKey(Wine, null=False)
-	user = models.ForeignKey(User, null=False) #necessary? or mounted.finish.user?
+	user = models.ForeignKey(User, null=False)
+
 	mounted = models.ForeignKey(Movement, related_name='bottle_mounted')
 	rated = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_rated')
 	date_mounted = models.DateTimeField() #included in Movement but necessary for filter? #DateTime or Date?
 	date_rated = models.DateTimeField(null=True, blank=True, default=None) #included in Movement but necessary for filter?
+	
 	rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=True, blank=True, default=None) #integer for 3.5? Blank=True?
 	comment = models.TextField(null=True, blank=True, default=None)
 	#tags = models.ManyToManyField('tags.Tag', related_name='posts')
+
+	def __unicode__(self):
+		return u'%s %s %s' % (self.start, "to", self.finish)
 
 	def save(self, *args, **kwargs):
 		# self.wine = wine #wine referencing issue
@@ -204,6 +211,7 @@ class Bottle(models.Model):
 		self.rating = rating
 		self.comment = comment
 		date_rated = d
+		#TODO: can only be rated if it has been mounted
 		v = Container.objects.get(container_type='vinibar', user=self.user)
 		#TODO: handle error
 		h = Container.objects.get(container_type='history', user=self.user)
@@ -236,10 +244,3 @@ class Bottle(models.Model):
 	# 	#m.save()
 	# 	self.date_mounted = d
 	# 	super(Bottle, self).save(self, self.wine, self.user, *args, **kwargs)
-
-
-	# def add_to_vinibar(vinibar_id, quantity):   Included in creation
-	# 	self.create_bottle()
-		# movement = Movement(from=cave, to=vinibar_id, quantity=quantity)
-		# movement.save()
-		# self.mount = movement
