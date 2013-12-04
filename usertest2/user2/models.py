@@ -116,14 +116,20 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
     	super(User, self).save(*args, **kwargs)
-    	c = Container(container_type='cellar', user=self) #Comment creer une cave unique? Utile?
+    	c, _ = Container.objects.get_or_create(container_type='cellar', user=self) #Comment creer une cave unique? Utile?
     	c.save()
-    	v = Container(container_type='vinibar', user=self)
+    	v, _ = Container.objects.get_or_create(container_type='vinibar', user=self)
     	v.save()
-    	h = Container(container_type='history', user=self)
+    	h, _ = Container.objects.get_or_create(container_type='history', user=self)
     	h.save()
-    	m = Movement(date=datetime.now(), start=c, finish=v)   #Creer le movement au moment de Bottle.save()
-    	m.save()
+    	m1, _ = Movement.objects.get_or_create(date=datetime.now(), start=c, finish=v)
+    	m1.save()
+    	print("Movement for"+self.email+"created")
+    	m2, _ = Movement.objects.get_or_create(date=datetime.now(), start=v, finish=h)
+    	m2.save()
+
+        def __unicode__(self):
+        	return self.email
 
 
 class Wine(models.Model):
@@ -142,7 +148,7 @@ class Wine(models.Model):
 
 
     def __unicode__(self):
-        return self.domaine #concatenate?
+        return u'%s %s' % (self.domaine, self.millesime)
 
     def update_qty(self, quantity):
         self.quantity -= quantity
@@ -162,13 +168,17 @@ class Container(models.Model):
 	container_type = models.CharField(max_length=10, choices=CONTAINER_TYPE)
 	user = models.ForeignKey(User, related_name='user_id')
 
-	#Vinibar & History must be created when a user is created?
+	def __unicode__(self):
+		return u'%s %s' % (self.container_type, self.user)
 
 class Movement(models.Model):
     date = models.DateTimeField()
     start = models.ForeignKey(Container, related_name='movement_start')
     finish = models.ForeignKey(Container, related_name='movement_finish')
     quantity = models.IntegerField(default=1)
+
+    def __unicode__(self):
+		return u'%s %s %s' % (self.start, "to", self.finish)
 
 class Bottle(models.Model):
 	#id = ???
