@@ -11,17 +11,18 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    #'default': dj_database_url.config()
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+
+DATABASES = {  
+    'default': {  
+        'ENGINE': 'postgresql_psycopg2',
         'NAME': 'usertest2',
         'USER': 'bpipat',
-        'PASSWORD': 'wineisgood',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
-    }
-}
+        'PASSWORD': 'wineisgood',  
+        'HOST': 'ec2-ip-address.amazonaws.com',  
+        'PORT': '',  # leave blank  
+    }  
+}  
+
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -167,5 +168,5 @@ LOGGING = {
     }
 }
 
-# ENVIRONMENT = os.environ.get('ENVIRONMENT', 'dev')  # dev, production, qa, etc
-# exec('from settings_%s import *' % ENVIRONMENT)
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'dev')  # dev, production, qa, etc
+exec('from settings_%s import *' % ENVIRONMENT)
