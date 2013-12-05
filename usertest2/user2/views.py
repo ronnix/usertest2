@@ -32,6 +32,18 @@ class VinibarViewSet(viewsets.ModelViewSet):
     		queryset = queryset.filter(user=username)
 		return queryset
 
+
+class VinibarWinesViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    serializer_class = BottleSerializer
+
+    def get_queryset(self):
+    	username = self.request.user
+    	queryset = Bottle.objects.filter(user=username).values('wine','wine__domaine')
+		return queryset
+
 # class VinibarViewSet(viewsets.ModelViewSet):
 #     """
 #     API endpoint that shows users vinibars

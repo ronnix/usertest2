@@ -14,7 +14,7 @@ router.register(r'containers', views.ContainerViewSet)
 router.register(r'bottles', views.BottleViewSet)
 #router.register(r'vinibar', views.VinibarView, base_name='vinibar')
 router.register(r'vinibar', views.VinibarViewSet, base_name='vinibar')
-
+router.register(r'vinibarwines', views.VinibarWinesViewSet, base_name='vinibarwines')
 
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),
