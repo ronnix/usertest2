@@ -7,14 +7,15 @@ from serializers import UserSerializer, WineSerializer, MovementSerializer, Cont
 
 
 class VinibarView(generics.ListAPIView):
+    queryset = Bottle.objects.filter(user=self.request.user)
     serializer_class = BottleSerializer
 
-    def get_queryset(self):
-        """
-        This view should return a list of wines in the user's vinibar
-        """
-        user = self.request.user
-        return Bottle.objects.filter(user=user)
+    # def get_queryset(self):
+    #     """
+    #     This view should return a list of wines in the user's vinibar
+    #     """
+    #     user = self.request.user
+    #     return Bottle.objects.filter(user=user)
 
 # class VinibarViewSet(viewsets.ModelViewSet):
 #     """
