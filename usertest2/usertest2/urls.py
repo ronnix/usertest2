@@ -13,7 +13,7 @@ router.register(r'movements', views.MovementViewSet)
 router.register(r'containers', views.ContainerViewSet)
 router.register(r'bottles', views.BottleViewSet)
 #router.register(r'vinibar', views.VinibarView, base_name='vinibar')
-router.register(r'vinibar', views.VinibarViewSet)
+router.register(r'vinibar', views.VinibarViewSet, base_name='vinibar')
 
 
 urlpatterns = patterns('',
