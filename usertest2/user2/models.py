@@ -197,7 +197,7 @@ class Bottle(models.Model):
 	#tags = models.ManyToManyField('tags.Tag', related_name='posts')
 
 	def __unicode__(self):
-		return u'%s %s %s' % (self.wine.domaine, "to", self.wine.millesime)
+		return u'%s %s' % (self.wine.domaine, self.wine.millesime)
 
 	def save(self, *args, **kwargs):
 		# self.wine = wine #wine referencing issue

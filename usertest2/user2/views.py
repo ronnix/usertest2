@@ -1,10 +1,38 @@
 from django.shortcuts import render
 #from django.contrib.auth.models import User, Group
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
 from models import User, Wine, Movement, Container, Bottle
 from serializers import UserSerializer, WineSerializer, MovementSerializer, ContainerSerializer, BottleSerializer
 #from quickstart.serializers import UserSerializer, GroupSerializer
 
+
+class VinibarView(generics.ListAPIView)
+    serializer_class = BottleSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of wines in the user's vinibar
+        """
+        user = self.request.user
+        return Bottle.objects.filter(user=user)
+
+# class VinibarViewSet(viewsets.ModelViewSet):
+#     """
+#     API endpoint that shows users vinibars
+#     """
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+
+#     def list(self, request):
+#         queryset = User.objects.all()
+#         serializer = UserSerializer(queryset, many=True)
+#         return Response(serializer.data)
+
+#     def retrieve(self, request, pk=None):
+#         queryset = User.objects.all()
+#         user = get_object_or_404(queryset, pk=pk)
+#         serializer = UserSerializer(user)
+#         return Response(serializer.data)
 
 class UserViewSet(viewsets.ModelViewSet):
     """

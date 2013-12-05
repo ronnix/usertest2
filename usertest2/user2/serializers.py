@@ -2,6 +2,9 @@ from models import User, Wine, Movement, Container, Bottle
 from rest_framework import serializers
 
 
+# class VinibarSerializer(serializers.Serializer):
+	
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
