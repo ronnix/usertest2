@@ -6,7 +6,7 @@ from serializers import UserSerializer, WineSerializer, MovementSerializer, Cont
 #from quickstart.serializers import UserSerializer, GroupSerializer
 
 
-class VinibarView(generics.ListAPIView)
+class VinibarView(generics.ListAPIView):
     serializer_class = BottleSerializer
 
     def get_queryset(self):
