@@ -6,18 +6,31 @@ from serializers import UserSerializer, WineSerializer, MovementSerializer, Cont
 #from quickstart.serializers import UserSerializer, GroupSerializer
 
 
-class VinibarView(generics.ListAPIView):
+# class VinibarView(generics.ListAPIView):
+#     serializer_class = BottleSerializer
+
+#     def get_queryset(self):
+#         """
+#         This view should return a list of wines in the user's vinibar
+#         """
+#         queryset = Bottle.objects.all()
+#         username = self.request.QUERY_PARAMS.get('email', None)
+#         if username is not None:
+#             queryset = queryset.filter(user=username)
+#         return queryset
+
+class VinibarViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
     serializer_class = BottleSerializer
 
     def get_queryset(self):
-        """
-        This view should return a list of wines in the user's vinibar
-        """
-        queryset = Bottle.objects.all()
-        username = self.request.QUERY_PARAMS.get('email', None)
+    	queryset = Bottle.objects.all()
+		username = self.request.QUERY_PARAMS.get('email', None)
         if username is not None:
-            queryset = queryset.filter(user=username)
-        return queryset
+			queryset = queryset.filter(user=username)
+		return queryset
 
 # class VinibarViewSet(viewsets.ModelViewSet):
 #     """
