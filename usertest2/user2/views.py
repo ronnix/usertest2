@@ -41,7 +41,7 @@ class VinibarWinesViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
     	username = self.request.user
-		queryset = Bottle.objects.filter(user=username).values('wine','wine__domaine')
+    	queryset = Bottle.objects.filter(user=username).values('wine','wine__domaine')
     	return queryset
 
 # class VinibarViewSet(viewsets.ModelViewSet):
