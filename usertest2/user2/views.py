@@ -27,7 +27,7 @@ class VinibarViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
     	queryset = Bottle.objects.all()
-    	username = self.request.QUERY_PARAMS.get('email', None)
+    	username = self.request.user
     	if username is not None:
     		queryset = queryset.filter(user=username)
 		return queryset
