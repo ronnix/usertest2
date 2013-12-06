@@ -209,10 +209,10 @@ class Bottle(models.Model):
 		# self.mounted = mounted
 		self.date_mounted = d
 		super(Bottle, self).save(*args, **kwargs)
-		# m = Movement.objects.get(start.user=self.user, start.container_type='cellar', finish.container_type='vinibar')
-		# m.date = d
-		# m.save()
-		# self.mounted = m
+		m = Movement.objects.get(start__user=self.user, start__container_type='cellar', finish__container_type='vinibar')
+		m.date = d
+		m.save()
+		self.mounted = m
 
 	def rate(self, rating, comment, *args, **kwargs): #interet de *args, **kwargs quand on connait l'input?
 		d = datetime.now()
