@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 
 # class VinibarSerializer(serializers.Serializer):
-	
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -35,6 +35,11 @@ class ContainerSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'container_type', 'user')
 
 class BottleSerializer(serializers.HyperlinkedModelSerializer):
+
+	# def __init__(self, *args, **kwargs):
+	# 	many = kwargs.pop('many', True)
+	# 	super(BottleSerializer, self).__init__(*args, **kwargs)
+
     class Meta:
         model = Bottle
-        fields = ('url', 'wine', 'user', 'mounted')
+        fields = ('url', 'wine', 'user')

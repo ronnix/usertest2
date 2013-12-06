@@ -122,9 +122,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     	v.save()
     	h, _ = Container.objects.get_or_create(container_type='history', user=self)
     	h.save()
-    	m1, _ = Movement.objects.get_or_create(date=datetime.now(), start=c, finish=v)
+    	m1, _ = Movement.objects.get_or_create(start=c, finish=v)
     	m1.save()
-    	m2, _ = Movement.objects.get_or_create(date=datetime.now(), start=v, finish=h)
+    	m2, _ = Movement.objects.get_or_create(start=v, finish=h)
     	m2.save()
 
         def __unicode__(self):
@@ -170,6 +170,9 @@ class Container(models.Model):
 	def __unicode__(self):
 		return u'%s %s' % (self.container_type, self.user)
 
+	# class Meta:
+	# 	unique_together = ('container_type', 'user')
+
 class Movement(models.Model):
     date = models.DateTimeField()
     start = models.ForeignKey(Container, related_name='movement_start') #imposer start/user == finish.user
@@ -200,11 +203,16 @@ class Bottle(models.Model):
 		return u'%s %s' % (self.wine.domaine, self.wine.millesime)
 
 	def save(self, *args, **kwargs):
+		d = datetime.now()
 		# self.wine = wine #wine referencing issue
 		# self.user = user
 		# self.mounted = mounted
-		self.date_mounted = datetime.now()
+		self.date_mounted = d
 		super(Bottle, self).save(*args, **kwargs)
+		m = Movement.objects.get(start.user=self.user, start.container_type='vinibar')
+		m.date = d
+		m.save()
+		self.mounted = m
 
 	def rate(self, rating, comment, *args, **kwargs): #interet de *args, **kwargs quand on connait l'input?
 		d = datetime.now()
