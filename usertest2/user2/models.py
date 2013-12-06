@@ -206,15 +206,14 @@ class Bottle(models.Model):
 		d = datetime.now()
 		# self.wine = wine #wine referencing issue
 		# self.user = user
-		# self.mounted = mounted
+		self.mounted = Movement.objects.filter(start__user=self.user, 
+			start__container_type='cellar', finish__container_type='vinibar')[0]
 		self.date_mounted = d
 		super(Bottle, self).save(*args, **kwargs)
-		a = Movement.objects.latest('date')
-		m = Movement.objects.filter(id=a.id+1, start__user=self.user, 
-			start__container_type='cellar', finish__container_type='vinibar')[0] #TODO: Uniqueness of movements
-		m.date = d
-		m.save()
-		#self.mounted = m
+		# m = Movement.objects.filter(start__user=self.user, 
+		# 	start__container_type='cellar', finish__container_type='vinibar')[0] #TODO: Uniqueness of movements
+		self.mounted.date = d
+		# m.save()
 
 
 	def rate(self, rating, comment, *args, **kwargs): #interet de *args, **kwargs quand on connait l'input?
