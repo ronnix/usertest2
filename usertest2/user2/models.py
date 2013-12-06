@@ -210,10 +210,7 @@ class Bottle(models.Model):
 			start__container_type='cellar', finish__container_type='vinibar')[0]
 		self.date_mounted = d
 		super(Bottle, self).save(*args, **kwargs)
-		# m = Movement.objects.filter(start__user=self.user, 
-		# 	start__container_type='cellar', finish__container_type='vinibar')[0] #TODO: Uniqueness of movements
 		self.mounted.date = d
-		# m.save()
 
 
 	def rate(self, rating, comment, *args, **kwargs): #interet de *args, **kwargs quand on connait l'input?
