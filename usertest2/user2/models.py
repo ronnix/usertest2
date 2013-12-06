@@ -190,7 +190,7 @@ class Bottle(models.Model):
 	wine = models.ForeignKey(Wine, null=False)
 	user = models.ForeignKey(User, null=False)
 
-	mounted = models.ForeignKey(Movement, related_name='bottle_mounted')
+	mounted = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_mounted')
 	rated = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_rated')
 	date_mounted = models.DateTimeField() #included in Movement but necessary for filter? #DateTime or Date?
 	date_rated = models.DateTimeField(null=True, blank=True, default=None) #included in Movement but necessary for filter?
@@ -209,7 +209,7 @@ class Bottle(models.Model):
 		# self.mounted = mounted
 		self.date_mounted = d
 		super(Bottle, self).save(*args, **kwargs)
-		m = Movement.objects.get(start.user=self.user, start.container_type='vinibar')
+		m = Movement.objects.get(start.user=self.user, start.container_type='cellar', finish.container_type='vinibar')
 		m.date = d
 		m.save()
 		self.mounted = m
