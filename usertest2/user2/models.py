@@ -210,10 +210,11 @@ class Bottle(models.Model):
 		self.date_mounted = d
 		super(Bottle, self).save(*args, **kwargs)
 		m = Movement.objects.filter(start__user=self.user, 
-			start__container_type='cellar', finish__container_type='vinibar')[1] #TODO: Uniqueness of movements
+			start__container_type='cellar', finish__container_type='vinibar')[0] #TODO: Uniqueness of movements
 		m.date = d
 		m.save()
-		self.mounted = m
+		#self.mounted = m
+
 
 	def rate(self, rating, comment, *args, **kwargs): #interet de *args, **kwargs quand on connait l'input?
 		d = datetime.now()
