@@ -42,4 +42,4 @@ class BottleSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Bottle
-        fields = ('url', 'wine', 'user')
+        fields = ('url', 'wine', 'user', 'mounted')
