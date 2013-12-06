@@ -209,7 +209,8 @@ class Bottle(models.Model):
 		# self.mounted = mounted
 		self.date_mounted = d
 		super(Bottle, self).save(*args, **kwargs)
-		m = Movement.objects.get(start__user=self.user, start__container_type='cellar', finish__container_type='vinibar')
+		m = Movement.objects.filter(start__user=self.user, 
+			start__container_type='cellar', finish__container_type='vinibar')[0] #TODO: Uniqueness of movements
 		m.date = d
 		m.save()
 		self.mounted = m
