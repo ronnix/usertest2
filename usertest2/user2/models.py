@@ -174,7 +174,7 @@ class Container(models.Model):
 	# 	unique_together = ('container_type', 'user')
 
 class Movement(models.Model):
-    date = models.DateTimeField()
+    date = models.DateTimeField(null=True, blank=True, default=None)
     start = models.ForeignKey(Container, related_name='movement_start') #imposer start/user == finish.user
     finish = models.ForeignKey(Container, related_name='movement_finish')
     quantity = models.IntegerField(default=1)
@@ -210,7 +210,7 @@ class Bottle(models.Model):
 		self.date_mounted = d
 		super(Bottle, self).save(*args, **kwargs)
 		m = Movement.objects.filter(start__user=self.user, 
-			start__container_type='cellar', finish__container_type='vinibar')[0] #TODO: Uniqueness of movements
+			start__container_type='cellar', finish__container_type='vinibar')[1] #TODO: Uniqueness of movements
 		m.date = d
 		m.save()
 		self.mounted = m
