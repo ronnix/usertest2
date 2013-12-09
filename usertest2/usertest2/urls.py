@@ -37,4 +37,4 @@ urlpatterns = patterns('',
 urlpatterns += patterns('',
     url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token')
 )
-urlpatterns = format_suffix_patterns(urlpatterns)
+# urlpatterns = format_suffix_patterns(urlpatterns)
