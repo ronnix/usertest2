@@ -5,6 +5,37 @@ from models import User, Wine, Movement, Container, Bottle
 from serializers import UserSerializer, WineSerializer, MovementSerializer, ContainerSerializer, BottleSerializer
 #from quickstart.serializers import UserSerializer, GroupSerializer
 
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from django.contrib.auth import authenticate, login
+
+# class ExampleView(APIView):
+#     authentication_classes = (SessionAuthentication, BasicAuthentication)
+#     permission_classes = (IsAuthenticated,)
+
+#     def get(self, request, format=None):
+#         content = {
+#             'user': unicode(request.user),  # `django.contrib.auth.User` instance.
+#             'auth': unicode(request.auth),  # None
+#         }
+#         return Response(content)
+
+def my_view(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            return redirect('vinibarwines')
+        else:
+            # Return a 'disabled account' error message
+    else:
+        # Return an 'invalid login' error message.
+
 
 # class VinibarView(generics.ListAPIView):
 #     serializer_class = BottleSerializer
@@ -52,10 +83,10 @@ class RatedWinesViewSet(viewsets.ModelViewSet):
     serializer_class = WineSerializer
 
     def get_queryset(self):
-    	if request.user.is_authenticated():
-    		username = self.request.user
-    		queryset = Wine.objects.filter(bottle__user=username, bottle__rated__isnull=False, bottle__rating__isnull=False)
-    		return queryset
+    	#if request.user.is_authenticated():
+		username = self.request.user
+		queryset = Wine.objects.filter(bottle__user=username, bottle__rated__isnull=False, bottle__rating__isnull=False)
+		return queryset
 
 # class VinibarViewSet(viewsets.ModelViewSet):
 #     """

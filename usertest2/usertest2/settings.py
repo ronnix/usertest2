@@ -129,6 +129,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'user2',
     'rest_framework',
+    'rest_framework.authtoken',
     'gunicorn', #added for heroku
     'corsheaders', #CORS
 )
