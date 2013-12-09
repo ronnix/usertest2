@@ -6,6 +6,8 @@ from user2 import views
 from django.contrib import admin
 admin.autodiscover()
 
+from rest_framework.urlpatterns import format_suffix_patterns
+
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'wines', views.WineViewSet)
@@ -31,3 +33,8 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}), #added for heroku
 )
+
+urlpatterns += patterns('',
+    url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token')
+)
+urlpatterns = format_suffix_patterns(urlpatterns)

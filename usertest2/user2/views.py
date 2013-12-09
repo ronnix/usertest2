@@ -52,9 +52,10 @@ class RatedWinesViewSet(viewsets.ModelViewSet):
     serializer_class = WineSerializer
 
     def get_queryset(self):
-    	username = self.request.user
-    	queryset = Wine.objects.filter(bottle__user=username, bottle__rated__isnull=False, bottle__rating__isnull=False)
-    	return queryset
+    	if request.user.is_authenticated():
+    		username = self.request.user
+    		queryset = Wine.objects.filter(bottle__user=username, bottle__rated__isnull=False, bottle__rating__isnull=False)
+    		return queryset
 
 # class VinibarViewSet(viewsets.ModelViewSet):
 #     """
