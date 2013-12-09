@@ -43,3 +43,6 @@ class BottleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Bottle
         fields = ('url', 'wine', 'user')
+
+	# def get_api_url(self, obj):
+	# 	return "#/post/%s" % obj.id

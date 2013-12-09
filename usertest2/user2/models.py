@@ -78,7 +78,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         * last_login
         * is_superuser
     """
-    email = models.EmailField(_('email address'), max_length=255, unique=True, db_index=True) #TODO: PH=True
+    email = models.EmailField(_('email address'), max_length=255, unique=True, db_index=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
 
@@ -165,7 +165,7 @@ class Container(models.Model):
 	)
 
 	container_type = models.CharField(max_length=10, choices=CONTAINER_TYPE)
-	user = models.ForeignKey(User, related_name='user_id')
+	user = models.ForeignKey(User, related_name='user_id') #TODO: change related name to containers
 
 	def __unicode__(self):
 		return u'%s %s' % (self.container_type, self.user)
@@ -176,7 +176,7 @@ class Container(models.Model):
 class Movement(models.Model):
     date = models.DateTimeField(null=True, blank=True, default=None)
     start = models.ForeignKey(Container, related_name='movement_start') #imposer start/user == finish.user
-    finish = models.ForeignKey(Container, related_name='movement_finish')
+    finish = models.ForeignKey(Container, related_name='movement_finish') #TODO: change related name
     quantity = models.IntegerField(default=1)
 
     def __unicode__(self):
@@ -190,8 +190,8 @@ class Bottle(models.Model):
 	wine = models.ForeignKey(Wine, null=False)
 	user = models.ForeignKey(User, null=False)
 
-	mounted = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_mounted')
-	rated = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_rated')
+	mounted = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_mounted') #TODO: change related name
+	rated = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_rated') #TODO: change related name
 	date_mounted = models.DateTimeField() #included in Movement but necessary for filter? #DateTime or Date?
 	date_rated = models.DateTimeField(null=True, blank=True, default=None) #included in Movement but necessary for filter?
 	
