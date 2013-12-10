@@ -7,7 +7,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 from django.contrib.auth.views import login
-from django.contrib.auth.forms import AuthentificationForm
+from django.contrib.auth.forms import AuthenticationForm
 
 
 from rest_framework.urlpatterns import format_suffix_patterns
