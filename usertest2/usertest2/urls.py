@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^admin/', include(admin.site.urls)),
     #url(r'^login/$', views.login, name='login'),
-    url(r'^login/?$','django.contrib.auth.views.login',{'template_name':'/static/login.html', 'authentication_form':AuthenticationForm}),
+    url(r'^login/?$','django.contrib.auth.views.login',{'authentication_form':AuthenticationForm}),
     # url(r'^$', 'usertest2.views.home', name='home'),
     # url(r'^usertest2/', include('usertest2.foo.urls')),
 
