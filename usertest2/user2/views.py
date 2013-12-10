@@ -12,6 +12,8 @@ from rest_framework.views import APIView
 
 from django.contrib.auth import authenticate, login
 
+from django.http import HttpResponse, HttpResponseRedirect, QueryDict, Http404
+from django.template.response import TemplateResponse
 
 def login(request):
     if request.method != 'POST':
