@@ -2,7 +2,7 @@ from django.shortcuts import render
 #from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, permissions, generics
 from models import User, Wine, Movement, Container, Bottle
-from serializers import UserSerializer, WineSerializer, MovementSerializer, ContainerSerializer, BottleSerializer
+from serializers import UserSerializer, WineSerializer, MovementSerializer, ContainerSerializer, BottleSerializer, RatingSerializer
 #from quickstart.serializers import UserSerializer, GroupSerializer
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -17,16 +17,16 @@ from django.template.response import TemplateResponse
 
 
 
-def login(request):
-    if request.method != 'POST':
-        raise Http404('Only POSTs are allowed')
-    try:
-        u = User.objects.get(username=request.POST['username'])
-        if u.password == request.POST['password']:
-            request.session['user_id'] = u.id
-            return HttpResponseRedirect('/vinibarwines/')
-    except User.DoesNotExist:
-        return HttpResponse("Your username and password didn't match.")
+# def login(request):
+#     if request.method != 'POST':
+#         raise Http404('Only POSTs are allowed')
+#     try:
+#         u = User.objects.get(username=request.POST['username'])
+#         if u.password == request.POST['password']:
+#             request.session['user_id'] = u.id
+#             return HttpResponseRedirect('/vinibarwines/')
+#     except User.DoesNotExist:
+#         return HttpResponse("Your username and password didn't match.")
 
 # def login(request):
 #     username = request.POST['username']
@@ -112,6 +112,13 @@ class ContainerViewSet(viewsets.ModelViewSet):
     serializer_class = ContainerSerializer
 
 class BottleViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows bottles to be viewed or edited.
+    """
+    queryset = Bottle.objects.all()
+    serializer_class = BottleSerializer
+
+class RatingViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows bottles to be viewed or edited.
     """

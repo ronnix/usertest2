@@ -22,13 +22,14 @@ router.register(r'bottles', views.BottleViewSet)
 router.register(r'vinibar', views.VinibarViewSet, base_name='vinibar')
 router.register(r'vinibarwines', views.VinibarWinesViewSet, base_name='vinibarwines')
 router.register(r'ratedwines', views.RatedWinesViewSet, base_name='ratedwines')
+router.register(r'rating', views.RatingViewSet, base_name='rating')
 
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^admin/', include(admin.site.urls)),
     #url(r'^login/$', views.login, name='login'),
-    url(r'^login/?$','django.contrib.auth.views.login',{'template_name':'https://raw.github.com/bpipat/usertest2/master/usertest2/static/login.html', 'authentication_form':AuthenticationForm}),
+    #url(r'^login/?$','django.contrib.auth.views.login',{'template_name':'', 'authentication_form':AuthenticationForm}),
     # url(r'^$', 'usertest2.views.home', name='home'),
     # url(r'^usertest2/', include('usertest2.foo.urls')),
 
