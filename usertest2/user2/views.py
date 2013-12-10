@@ -123,7 +123,7 @@ class RatingViewSet(viewsets.ModelViewSet):
     API endpoint that allows bottles to be viewed or edited.
     """
     queryset = Bottle.objects.all()
-    serializer_class = BottleSerializer
+    serializer_class = RatingSerializer
 
     # class ExampleView(APIView):
 #     authentication_classes = (SessionAuthentication, BasicAuthentication)
