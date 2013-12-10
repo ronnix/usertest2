@@ -6,6 +6,10 @@ from user2 import views
 from django.contrib import admin
 admin.autodiscover()
 
+from django.contrib.auth.views import login
+from django.contrib.auth.forms import Authentification
+
+
 from rest_framework.urlpatterns import format_suffix_patterns
 
 router = routers.DefaultRouter()
@@ -23,7 +27,8 @@ urlpatterns = patterns('',
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^login/$', views.login, name='login'),
+    #url(r'^login/$', views.login, name='login'),
+    url(r'^login/?$','django.contrib.auth.views.login',{'template_name':'/static/login.html', 'authentication_form':AuthenticationForm}),
     # url(r'^$', 'usertest2.views.home', name='home'),
     # url(r'^usertest2/', include('usertest2.foo.urls')),
 
