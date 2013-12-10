@@ -23,18 +23,18 @@ from django.contrib.auth import authenticate, login
 #         }
 #         return Response(content)
 
-def my_view(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            login(request, user)
-            return redirect('vinibarwines')
-        else:
-            # Return a 'disabled account' error message
-    else:
-        # Return an 'invalid login' error message.
+# def my_view(request):
+#     username = request.POST['username']
+#     password = request.POST['password']
+#     user = authenticate(username=username, password=password)
+#     if user is not None:
+#         if user.is_active:
+#             login(request, user)
+#             return redirect('vinibarwines')
+#         else:
+#             # Return a 'disabled account' error message
+#     else:
+#         # Return an 'invalid login' error message.
 
 
 # class VinibarView(generics.ListAPIView):
