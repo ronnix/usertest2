@@ -12,18 +12,19 @@ from rest_framework.views import APIView
 
 from django.contrib.auth import authenticate, login
 
-# class ExampleView(APIView):
-#     authentication_classes = (SessionAuthentication, BasicAuthentication)
-#     permission_classes = (IsAuthenticated,)
 
-#     def get(self, request, format=None):
-#         content = {
-#             'user': unicode(request.user),  # `django.contrib.auth.User` instance.
-#             'auth': unicode(request.auth),  # None
-#         }
-#         return Response(content)
+def login(request):
+    if request.method != 'POST':
+        raise Http404('Only POSTs are allowed')
+    try:
+        u = User.objects.get(username=request.POST['username'])
+        if u.password == request.POST['password']:
+            request.session['user_id'] = u.id
+            return HttpResponseRedirect('/vinibarwines/')
+    except User.DoesNotExist:
+        return HttpResponse("Your username and password didn't match.")
 
-# def my_view(request):
+# def login(request):
 #     username = request.POST['username']
 #     password = request.POST['password']
 #     user = authenticate(username=username, password=password)
@@ -32,23 +33,12 @@ from django.contrib.auth import authenticate, login
 #             login(request, user)
 #             return redirect('vinibarwines')
 #         else:
-#             # Return a 'disabled account' error message
+#             #request.context['status'] = 'inactive user'
+#             pass
 #     else:
-#         # Return an 'invalid login' error message.
+#         #request.context['status'] = 'incorrect login/password'
+#         pass
 
-
-# class VinibarView(generics.ListAPIView):
-#     serializer_class = BottleSerializer
-
-#     def get_queryset(self):
-#         """
-#         This view should return a list of wines in the user's vinibar
-#         """
-#         queryset = Bottle.objects.all()
-#         username = self.request.QUERY_PARAMS.get('email', None)
-#         if username is not None:
-#             queryset = queryset.filter(user=username)
-#         return queryset
 
 class VinibarViewSet(viewsets.ModelViewSet):
     """
@@ -88,23 +78,6 @@ class RatedWinesViewSet(viewsets.ModelViewSet):
 		queryset = Wine.objects.filter(bottle__user=username, bottle__rated__isnull=False, bottle__rating__isnull=False)
 		return queryset
 
-# class VinibarViewSet(viewsets.ModelViewSet):
-#     """
-#     API endpoint that shows users vinibars
-#     """
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-
-#     def list(self, request):
-#         queryset = User.objects.all()
-#         serializer = UserSerializer(queryset, many=True)
-#         return Response(serializer.data)
-
-#     def retrieve(self, request, pk=None):
-#         queryset = User.objects.all()
-#         user = get_object_or_404(queryset, pk=pk)
-#         serializer = UserSerializer(user)
-#         return Response(serializer.data)
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -140,3 +113,47 @@ class BottleViewSet(viewsets.ModelViewSet):
     """
     queryset = Bottle.objects.all()
     serializer_class = BottleSerializer
+
+    # class ExampleView(APIView):
+#     authentication_classes = (SessionAuthentication, BasicAuthentication)
+#     permission_classes = (IsAuthenticated,)
+
+#     def get(self, request, format=None):
+#         content = {
+#             'user': unicode(request.user),  # `django.contrib.auth.User` instance.
+#             'auth': unicode(request.auth),  # None
+#         }
+#         return Response(content)
+
+
+
+# class VinibarView(generics.ListAPIView):
+#     serializer_class = BottleSerializer
+
+#     def get_queryset(self):
+#         """
+#         This view should return a list of wines in the user's vinibar
+#         """
+#         queryset = Bottle.objects.all()
+#         username = self.request.QUERY_PARAMS.get('email', None)
+#         if username is not None:
+#             queryset = queryset.filter(user=username)
+#         return queryset
+
+# class VinibarViewSet(viewsets.ModelViewSet):
+#     """
+#     API endpoint that shows users vinibars
+#     """
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+
+#     def list(self, request):
+#         queryset = User.objects.all()
+#         serializer = UserSerializer(queryset, many=True)
+#         return Response(serializer.data)
+
+#     def retrieve(self, request, pk=None):
+#         queryset = User.objects.all()
+#         user = get_object_or_404(queryset, pk=pk)
+#         serializer = UserSerializer(user)
+#         return Response(serializer.data)

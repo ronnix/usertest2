@@ -72,7 +72,6 @@ class UserManager(models.Manager):
         return self.get(**{self.model.USERNAME_FIELD: username})
 
 
-
 class User(AbstractBaseUser, PermissionsMixin):
     """
     Abstract User with the same behaviour as Django's default User but
@@ -121,38 +120,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         send_mail(subject, message, from_email, [self.email])
 
-    # def login(self, request, **kwargs):
-    #     if request.user.is_authenticated():
-    #         kwargs['id'] = request.user.id
-    #         return self.get_detail(request, **kwargs)
-
-    #     self.method_check(request, allowed=['post'])
-    #     deserialized = self.deserialize(request, request.raw_post_data, format=request.META.get('CONTENT_TYPE', 'application/json'))
-    #     # Validate form
-    #     bundle = self.build_bundle(data=dict_strip_unicode_keys(deserialized), request=request)
-    #     errors = CleanedDataFormValidation(form_class=LoginForm).is_valid(bundle, request)
-    #     if errors:
-    #         return self.error_response(request, {'login': errors}, response_class=HttpBadRequest)
-    #     # The form is valid, continue with login
-    #     email = deserialized.get('email', None)
-    #     password = deserialized.get('password', None)
-    #     user = authenticate(username=email, password=password)           
-    #     if user:
-    #         if user.is_active:
-    #             login(request, user)
-    #             kwargs['id'] = user.id
-    #             # Return the logged-in user resource
-    #             return self.get_detail(request, **kwargs)
-    #         else:
-    #             return self.create_response(request, {
-    #                 'success': False,
-    #                 'reason': 'disabled',
-    #                 }, HttpForbidden )
-    #     else:
-    #         return self.create_response(request, {
-    #             'success': False,
-    #             'reason': 'incorrect',
-    #             }, HttpForbidden)
+   
 
 
     def save(self, *args, **kwargs):
