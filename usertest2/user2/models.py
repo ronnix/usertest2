@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core.mail import send_mail
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -7,8 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 from datetime import datetime
 
-from rest_framework import serializers
-from rest_framework.authtoken.models import Token
+# from rest_framework.authtoken.models import Token
 
 # @receiver(post_save, sender=user2.User)
 # def create_auth_token(sender, instance=None, created=False, **kwargs):
