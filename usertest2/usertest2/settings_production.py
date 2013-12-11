@@ -13,16 +13,16 @@ MANAGERS = ADMINS
 
 DATABASES['default'] = dj_database_url.config(default=os.environ.get('DATABASE_URL'))  #added for heroku
 
-DATABASES = {  
-    'default': {  
+DATABASES = {
+    'default': {
         'ENGINE': 'postgresql_psycopg2',
         'NAME': 'usertest2',
         'USER': 'bpipat',
-        'PASSWORD': 'wineisgood',  
-        'HOST': 'ec2-ip-address.amazonaws.com',  
-        'PORT': '',  # leave blank  
-    }  
-}  
+        'PASSWORD': 'wineisgood',
+        'HOST': 'ec2-ip-address.amazonaws.com',
+        'PORT': '',  # leave blank
+    }
+}
 
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False

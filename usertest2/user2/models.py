@@ -16,6 +16,7 @@ from rest_framework.authtoken.models import Token
 
 
 class UserManager(models.Manager):
+
     @classmethod
     def normalize_email(cls, email):
         """
@@ -101,7 +102,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-
     # def get_full_name(self):
     #     """
     #     Returns the email.
@@ -120,28 +120,26 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         send_mail(subject, message, from_email, [self.email])
 
-   
-
-
     def save(self, *args, **kwargs):
-    	super(User, self).save(*args, **kwargs)
-    	c, _ = Container.objects.get_or_create(container_type='cellar', user=self) #Comment creer une cave unique? Utile?
-    	c.save()
-    	v, _ = Container.objects.get_or_create(container_type='vinibar', user=self)
-    	v.save()
-    	h, _ = Container.objects.get_or_create(container_type='history', user=self)
-    	h.save()
-    	m1, _ = Movement.objects.get_or_create(start=c, finish=v)
-    	m1.save()
-    	m2, _ = Movement.objects.get_or_create(start=v, finish=h)
-    	m2.save()
+        super(User, self).save(*args, **kwargs)
+        c, _ = Container.objects.get_or_create(container_type='cellar', user=self) #Comment creer une cave unique? Utile?
+        c.save()
+        v, _ = Container.objects.get_or_create(container_type='vinibar', user=self)
+        v.save()
+        h, _ = Container.objects.get_or_create(container_type='history', user=self)
+        h.save()
+        m1, _ = Movement.objects.get_or_create(start=c, finish=v)
+        m1.save()
+        m2, _ = Movement.objects.get_or_create(start=v, finish=h)
+        m2.save()
 
-        def __unicode__(self):
-        	return self.email
+    def __unicode__(self):
+        return self.email
 
 
 class Wine(models.Model):
-	#How to reference wines when creating a bottle (domaine_millesime?)
+
+    #How to reference wines when creating a bottle (domaine_millesime?)
     couleur = models.CharField(max_length=100, blank=True)
     pays = models.CharField(max_length=100, blank=True)
     region = models.CharField(max_length=100, blank=True)
@@ -154,7 +152,6 @@ class Wine(models.Model):
     description = models.TextField()  #TODO: accepter accents
     added_on = models.DateTimeField(auto_now_add=True)
 
-
     def __unicode__(self):
         return u'%s %s' % (self.domaine, self.millesime)
 
@@ -165,98 +162,102 @@ class Wine(models.Model):
     def qty(self):
         return self.quantity
 
+
 class Container(models.Model):
 
-	CONTAINER_TYPE = (
-	('cellar', 'Cellar'),
-	('vinibar', 'Vinibar'),
-	('history', 'History'),
-	)
+    CONTAINER_TYPE = (
+        ('cellar', 'Cellar'),
+        ('vinibar', 'Vinibar'),
+        ('history', 'History'),
+    )
 
-	container_type = models.CharField(max_length=10, choices=CONTAINER_TYPE)
-	user = models.ForeignKey(User, related_name='user_id') #TODO: change related name to containers
+    container_type = models.CharField(max_length=10, choices=CONTAINER_TYPE)
+    user = models.ForeignKey(User, related_name='user_id') #TODO: change related name to containers
 
-	def __unicode__(self):
-		return u'%s %s' % (self.container_type, self.user)
+    def __unicode__(self):
+        return u'%s %s' % (self.container_type, self.user)
 
-	# class Meta:
-	# 	unique_together = ('container_type', 'user')
+    # class Meta:
+    #   unique_together = ('container_type', 'user')
+
 
 class Movement(models.Model):
+
     date = models.DateTimeField(null=True, blank=True, default=None)
     start = models.ForeignKey(Container, related_name='movement_start') #imposer start/user == finish.user
     finish = models.ForeignKey(Container, related_name='movement_finish') #TODO: change related name
     quantity = models.IntegerField(default=1)
 
     def __unicode__(self):
-		return u'%s %s %s' % (self.start, "to", self.finish)
+        return u'%s %s %s' % (self.start, "to", self.finish)
 
-	# class Meta:
-	# 	unique_together = ('start', 'finish') #TODO: Check for / remove duplicates 
+    # class Meta:
+    #   unique_together = ('start', 'finish') #TODO: Check for / remove duplicates
+
 
 class Bottle(models.Model):
-	#id = ???
-	wine = models.ForeignKey(Wine, null=False)
-	user = models.ForeignKey(User, null=False)
 
-	mounted = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_mounted') #TODO: change related name
-	rated = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_rated') #TODO: change related name
-	date_mounted = models.DateTimeField() #included in Movement but necessary for filter? #DateTime or Date?
-	date_rated = models.DateTimeField(null=True, blank=True, default=None) #included in Movement but necessary for filter?
-	
-	rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=True, blank=True, default=None) #integer for 3.5? Blank=True?
-	comment = models.TextField(null=True, blank=True, default=None)
-	#tags = models.ManyToManyField('tags.Tag', related_name='posts')
+    #id = ???
+    wine = models.ForeignKey(Wine, null=False)
+    user = models.ForeignKey(User, null=False)
 
-	def __unicode__(self):
-		return u'%s %s' % (self.wine.domaine, self.wine.millesime)
+    mounted = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_mounted') #TODO: change related name
+    rated = models.ForeignKey(Movement, null=True, blank=True, default=None, related_name='bottle_rated') #TODO: change related name
+    date_mounted = models.DateTimeField() #included in Movement but necessary for filter? #DateTime or Date?
+    date_rated = models.DateTimeField(null=True, blank=True, default=None) #included in Movement but necessary for filter?
 
-	def save(self, *args, **kwargs):
-		d = datetime.now()
-		# self.wine = wine #wine referencing issue
-		# self.user = user
-		self.mounted = Movement.objects.filter(start__user=self.user, 
-			start__container_type='cellar', finish__container_type='vinibar')[0]
-		self.date_mounted = d
-		super(Bottle, self).save(*args, **kwargs)
-		self.mounted.date = d
+    rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=True, blank=True, default=None) #integer for 3.5? Blank=True?
+    comment = models.TextField(null=True, blank=True, default=None)
+    #tags = models.ManyToManyField('tags.Tag', related_name='posts')
 
+    def __unicode__(self):
+        return u'%s %s' % (self.wine.domaine, self.wine.millesime)
 
-	def rate(self, rating, comment, *args, **kwargs): #interet de *args, **kwargs quand on connait l'input?
-		d = datetime.now()
-		self.rating = rating
-		self.comment = comment
-		date_rated = d
-		#TODO: can only be rated if it has been mounted
-		v = Container.objects.get(container_type='vinibar', user=self.user)
-		#TODO: handle error
-		h = Container.objects.get(container_type='history', user=self.user)
-		#TODO: handle error 
-		m = Movement(date=d, start=v, finish=h) #quantity=quantity?
-		m.save()
-		self.rated = m
+    def save(self, *args, **kwargs):
+        d = datetime.now()
+        # self.wine = wine #wine referencing issue
+        # self.user = user
+        self.mounted = Movement.objects.filter(start__user=self.user,
+            start__container_type='cellar', finish__container_type='vinibar')[0]
+        self.date_mounted = d
+        super(Bottle, self).save(*args, **kwargs)
+        self.mounted.date = d
 
-	def current_bottles():
-		b = Bottle.objects.filter(user=self.user and self.rated==null).order_by('date_mounted')
+    def rate(self, rating, comment, *args, **kwargs): #interet de *args, **kwargs quand on connait l'input?
+        d = datetime.now()
+        self.rating = rating
+        self.comment = comment
+        date_rated = d
+        #TODO: can only be rated if it has been mounted
+        v = Container.objects.get(container_type='vinibar', user=self.user)
+        #TODO: handle error
+        h = Container.objects.get(container_type='history', user=self.user)
+        #TODO: handle error
+        m = Movement(date=d, start=v, finish=h) #quantity=quantity?
+        m.save()
+        self.rated = m
 
-	def rated_bottles():
-		b = Bottle.objects.filter(user=self.user and rated.finish.user==self.user).order_by('date_rated')
+    def current_bottles():
+        b = Bottle.objects.filter(user=self.user and self.rated==null).order_by('date_mounted')
 
-	# def save(self, *args, **kwargs):
-	# 	d = datetime.now()
-	# 	self.wine = wine #wine referencing issue
-	# 	self.user = user
-	# 	#TODO: stock alert: 
-	# 	#q = Wine.objects.get("wine_id").quantity
-	# 	#if(q<1) raiseError('No bottle available') send email? 
-	# 	#Wine.objects.get("wine_id").quantity -= 1
-	# 	v = Container.objects.get(container_type='vinibar', user=user)
-	# 	#TODO: handle error
-	# 	c = Container.objects.get(container_type='cellar', user=admin)
-	# 	#TODO: handle error 
-	# 	m = Movement(date=d, start=c, finish=v) #quantity=quantity?
-	# 	m.save()
-	# 	self.mounted = m
-	# 	#m.save()
-	# 	self.date_mounted = d
-	# 	super(Bottle, self).save(self, self.wine, self.user, *args, **kwargs)
+    def rated_bottles():
+        b = Bottle.objects.filter(user=self.user and rated.finish.user==self.user).order_by('date_rated')
+
+    # def save(self, *args, **kwargs):
+    #   d = datetime.now()
+    #   self.wine = wine #wine referencing issue
+    #   self.user = user
+    #   #TODO: stock alert:
+    #   #q = Wine.objects.get("wine_id").quantity
+    #   #if(q<1) raiseError('No bottle available') send email?
+    #   #Wine.objects.get("wine_id").quantity -= 1
+    #   v = Container.objects.get(container_type='vinibar', user=user)
+    #   #TODO: handle error
+    #   c = Container.objects.get(container_type='cellar', user=admin)
+    #   #TODO: handle error
+    #   m = Movement(date=d, start=c, finish=v) #quantity=quantity?
+    #   m.save()
+    #   self.mounted = m
+    #   #m.save()
+    #   self.date_mounted = d
+    #   super(Bottle, self).save(self, self.wine, self.user, *args, **kwargs)

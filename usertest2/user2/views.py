@@ -51,11 +51,11 @@ class VinibarViewSet(viewsets.ModelViewSet):
     serializer_class = BottleSerializer
 
     def get_queryset(self):
-    	queryset = Bottle.objects.all()
-    	username = self.request.user
-    	if username is not None:
-    		queryset = queryset.filter(user=username)
-		return queryset
+        queryset = Bottle.objects.all()
+        username = self.request.user
+        if username is not None:
+            queryset = queryset.filter(user=username)
+        return queryset
 
 
 class VinibarWinesViewSet(viewsets.ModelViewSet):
@@ -65,9 +65,9 @@ class VinibarWinesViewSet(viewsets.ModelViewSet):
     serializer_class = WineSerializer
 
     def get_queryset(self):
-    	username = self.request.user
-    	queryset = Wine.objects.filter(bottle__user=username, bottle__rated__isnull=True)
-    	return queryset
+        username = self.request.user
+        queryset = Wine.objects.filter(bottle__user=username, bottle__rated__isnull=True)
+        return queryset
 
 
 class RatedWinesViewSet(viewsets.ModelViewSet):
@@ -77,10 +77,10 @@ class RatedWinesViewSet(viewsets.ModelViewSet):
     serializer_class = WineSerializer
 
     def get_queryset(self):
-    	#if request.user.is_authenticated():
-		username = self.request.user
-		queryset = Wine.objects.filter(bottle__user=username, bottle__rated__isnull=False, bottle__rating__isnull=False)
-		return queryset
+        #if request.user.is_authenticated():
+        username = self.request.user
+        queryset = Wine.objects.filter(bottle__user=username, bottle__rated__isnull=False, bottle__rating__isnull=False)
+        return queryset
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -90,12 +90,14 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 class WineViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows wines to be viewed or edited.
     """
     queryset = Wine.objects.all()
     serializer_class = WineSerializer
+
 
 class MovementViewSet(viewsets.ModelViewSet):
     """
@@ -104,6 +106,7 @@ class MovementViewSet(viewsets.ModelViewSet):
     queryset = Movement.objects.all()
     serializer_class = MovementSerializer
 
+
 class ContainerViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows containers to be viewed or edited.
@@ -111,12 +114,14 @@ class ContainerViewSet(viewsets.ModelViewSet):
     queryset = Container.objects.all()
     serializer_class = ContainerSerializer
 
+
 class BottleViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows bottles to be viewed or edited.
     """
     queryset = Bottle.objects.all()
     serializer_class = BottleSerializer
+
 
 class RatingViewSet(viewsets.ModelViewSet):
     """
@@ -137,7 +142,6 @@ class RatingViewSet(viewsets.ModelViewSet):
 #         return Response(content)
 
 
-
 # class VinibarView(generics.ListAPIView):
 #     serializer_class = BottleSerializer
 
@@ -150,6 +154,7 @@ class RatingViewSet(viewsets.ModelViewSet):
 #         if username is not None:
 #             queryset = queryset.filter(user=username)
 #         return queryset
+
 
 # class VinibarViewSet(viewsets.ModelViewSet):
 #     """
