@@ -237,11 +237,11 @@ class Bottle(models.Model):
         m.save()
         self.rated = m
 
-    def current_bottles():
-        b = Bottle.objects.filter(user=self.user and self.rated==null).order_by('date_mounted')
+    def current_bottles(self):
+        return Bottle.objects.filter(user=self.user and self.rated==None).order_by('date_mounted')
 
-    def rated_bottles():
-        b = Bottle.objects.filter(user=self.user and rated.finish.user==self.user).order_by('date_rated')
+    def rated_bottles(self):
+        return Bottle.objects.filter(user=self.user and self.rated.finish.user==self.user).order_by('date_rated')
 
     # def save(self, *args, **kwargs):
     #   d = datetime.now()
