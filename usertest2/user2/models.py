@@ -227,7 +227,7 @@ class Bottle(models.Model):
         d = datetime.now()
         self.rating = rating
         self.comment = comment
-        date_rated = d
+        self.date_rated = d
         #TODO: can only be rated if it has been mounted
         v = Container.objects.get(container_type='vinibar', user=self.user)
         #TODO: handle error
